@@ -197,7 +197,7 @@ public class ModelManager implements Model {
 
     @Override
     public void unselectDeck() {
-        this.selectedDeck = null;
+        this.selectedDeck = Optional.empty();
         updateFilteredCardList(PREDICATE_SHOW_ALL_CARDS);
     }
 
