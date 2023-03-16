@@ -21,6 +21,7 @@ import seedu.address.model.deck.Deck;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate card(s).";
+    public static final String MESSAGE_DUPLICATE_DECK = "Deck list contains duplicate deck(s).";
 
     private final List<JsonAdaptedCard> persons = new ArrayList<>();
     private final List<JsonAdaptedDeck> decks = new ArrayList<>();
@@ -52,25 +53,19 @@ class JsonSerializableAddressBook {
      */
     public MasterDeck toModelType() throws IllegalValueException {
         MasterDeck addressBook = new MasterDeck();
+
         for (JsonAdaptedCard jsonAdaptedCard : persons) {
             Card card = jsonAdaptedCard.toModelType();
             if (addressBook.hasCard(card)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
             addressBook.addCard(card);
-
-            /*
-            boolean isUnique = !card.getDeck().map(addressBook::hasDeck).get();
-            if (isUnique) {
-                card.getDeck().ifPresent(addressBook::addDeck);
-            }
-            */
         }
 
         for (JsonAdaptedDeck jsonAdaptedDeck : decks) {
             Deck deck = jsonAdaptedDeck.toModelType();
             if (addressBook.hasDeck(deck)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON); // todo: message_duplicate_deck
+                throw new IllegalValueException(MESSAGE_DUPLICATE_DECK);
             }
             addressBook.addDeck(deck);
         }
