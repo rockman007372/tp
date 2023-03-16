@@ -12,9 +12,10 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.MasterDeck;
 import seedu.address.model.ReadOnlyMasterDeck;
 import seedu.address.model.card.Card;
+import seedu.address.model.deck.Deck;
 
 /**
- * An Immutable Deck that is serializable to JSON format.
+ * An Immutable Master Deck that is serializable to JSON format.
  */
 @JsonRootName(value = "addressbook")
 class JsonSerializableAddressBook {
@@ -22,13 +23,16 @@ class JsonSerializableAddressBook {
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate card(s).";
 
     private final List<JsonAdaptedCard> persons = new ArrayList<>();
+    private final List<JsonAdaptedDeck> decks = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
      */
     @JsonCreator
-    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedCard> persons) {
+    public JsonSerializableAddressBook(@JsonProperty("persons") List<JsonAdaptedCard> persons,
+                                       @JsonProperty("decks") List<JsonAdaptedDeck> decks) {
         this.persons.addAll(persons);
+        this.decks.addAll(decks);
     }
 
     /**
@@ -38,6 +42,7 @@ class JsonSerializableAddressBook {
      */
     public JsonSerializableAddressBook(ReadOnlyMasterDeck source) {
         persons.addAll(source.getCardList().stream().map(JsonAdaptedCard::new).collect(Collectors.toList()));
+        decks.addAll(source.getDeckList().stream().map(JsonAdaptedDeck::new).collect(Collectors.toList()));
     }
 
     /**
@@ -54,11 +59,22 @@ class JsonSerializableAddressBook {
             }
             addressBook.addCard(card);
 
+            /*
             boolean isUnique = !card.getDeck().map(addressBook::hasDeck).get();
             if (isUnique) {
                 card.getDeck().ifPresent(addressBook::addDeck);
             }
+            */
         }
+
+        for (JsonAdaptedDeck jsonAdaptedDeck : decks) {
+            Deck deck = jsonAdaptedDeck.toModelType();
+            if (addressBook.hasDeck(deck)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON); // todo: message_duplicate_deck
+            }
+            addressBook.addDeck(deck);
+        }
+
         return addressBook;
     }
 
