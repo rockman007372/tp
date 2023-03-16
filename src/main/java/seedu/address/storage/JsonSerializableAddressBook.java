@@ -15,7 +15,7 @@ import seedu.address.model.card.Card;
 import seedu.address.model.deck.Deck;
 
 /**
- * An Immutable Master Deck that is serializable to JSON format.
+ * An Immutable MasterDeck that is serializable to JSON format.
  */
 @JsonRootName(value = "addressbook")
 class JsonSerializableAddressBook {
