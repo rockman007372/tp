@@ -109,15 +109,15 @@ public class MasterDeck implements ReadOnlyMasterDeck {
     /**
      * For sample data (SampleDataUtil), Cards may be added without adding Decks,
      * hence this function initialises Decks from the list of Cards.
+     *
      * In normal operation, Cards can only be added when a Deck is selected
      * hence this function should not be called in normal operation.
      */
     public void initDecks() {
-        for (Card card: cards) {
-            if (!decks.contains(card.getDeck().get())) {
-                addDeck(card.getDeck().get());
-            }
-        }
+        cards.asUnmodifiableObservableList().stream()
+                .map(card -> card.getDeck().get())
+                .distinct()
+                .forEach(this::addDeck);
     }
 
     /**
@@ -129,8 +129,8 @@ public class MasterDeck implements ReadOnlyMasterDeck {
     }
 
     /**
-     * Adds a card to the address book.
-     * The card must not already exist in the address book.
+     * Adds a card to the MasterDeck.
+     * The card must not already exist in the MasterDeck.
      */
     public void addDeck(Deck d) {
         decks.add(d);
