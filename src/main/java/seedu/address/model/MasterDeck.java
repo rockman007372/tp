@@ -184,7 +184,8 @@ public class MasterDeck implements ReadOnlyMasterDeck {
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof MasterDeck // instanceof handles nulls
-                && cards.equals(((MasterDeck) other).cards));
+                && cards.equals(((MasterDeck) other).cards)
+                && decks.equals(((MasterDeck) other).decks));
     }
 
     @Override

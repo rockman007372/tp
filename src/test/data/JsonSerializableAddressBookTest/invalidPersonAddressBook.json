@@ -1,5 +1,5 @@
 {
-  "persons": [ {
+  "cards": [ {
     "question": "!nvalid question",
     "answer": " Invalid answer",
     "deck" : "Default"
