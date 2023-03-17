@@ -18,10 +18,11 @@ import seedu.address.model.deck.Deck;
  * An Immutable MasterDeck that is serializable to JSON format.
  */
 @JsonRootName(value = "addressbook")
-class JsonSerializableAddressBook {
+class JsonSerializableMasterDeck {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Card list contains duplicate card(s).";
     public static final String MESSAGE_DUPLICATE_DECK = "Deck list contains duplicate deck(s).";
+    public static final String MESSAGE_MISSING_DECK = "Some cards exist without an existing deck.";
 
     private final List<JsonAdaptedCard> cards = new ArrayList<>();
     private final List<JsonAdaptedDeck> decks = new ArrayList<>();
@@ -31,8 +32,8 @@ class JsonSerializableAddressBook {
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
      */
     @JsonCreator
-    public JsonSerializableAddressBook(@JsonProperty("cards") List<JsonAdaptedCard> cards,
-                                       @JsonProperty("decks") List<JsonAdaptedDeck> decks) {
+    public JsonSerializableMasterDeck(@JsonProperty("cards") List<JsonAdaptedCard> cards,
+                                      @JsonProperty("decks") List<JsonAdaptedDeck> decks) {
         this.cards.addAll(cards);
         this.decks.addAll(decks);
     }
@@ -42,7 +43,7 @@ class JsonSerializableAddressBook {
      *
      * @param source future changes to this will not affect the created {@code JsonSerializableAddressBook}.
      */
-    public JsonSerializableAddressBook(ReadOnlyMasterDeck source) {
+    public JsonSerializableMasterDeck(ReadOnlyMasterDeck source) {
         cards.addAll(source.getCardList().stream().map(JsonAdaptedCard::new).collect(Collectors.toList()));
         decks.addAll(source.getDeckList().stream().map(JsonAdaptedDeck::new).collect(Collectors.toList()));
     }
@@ -53,25 +54,31 @@ class JsonSerializableAddressBook {
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public MasterDeck toModelType() throws IllegalValueException {
-        MasterDeck addressBook = new MasterDeck();
-
-        for (JsonAdaptedCard jsonAdaptedCard : cards) {
-            Card card = jsonAdaptedCard.toModelType();
-            if (addressBook.hasCard(card)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
-            }
-            addressBook.addCard(card);
-        }
+        MasterDeck masterDeck = new MasterDeck();
 
         for (JsonAdaptedDeck jsonAdaptedDeck : decks) {
             Deck deck = jsonAdaptedDeck.toModelType();
-            if (addressBook.hasDeck(deck)) {
+            if (masterDeck.hasDeck(deck)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_DECK);
             }
-            addressBook.addDeck(deck);
+            masterDeck.addDeck(deck);
         }
 
-        return addressBook;
+        for (JsonAdaptedCard jsonAdaptedCard : cards) {
+            Card card = jsonAdaptedCard.toModelType();
+            if (masterDeck.hasCard(card)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
+            }
+
+            Deck currDeck = card.getDeck().get();
+            if (!masterDeck.hasDeck(currDeck)) {
+                throw new IllegalValueException(MESSAGE_MISSING_DECK);
+            }
+
+            masterDeck.addCard(card);
+        }
+
+        return masterDeck;
     }
 
 }
