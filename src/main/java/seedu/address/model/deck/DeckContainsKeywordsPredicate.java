@@ -18,7 +18,7 @@ public class DeckContainsKeywordsPredicate implements Predicate<Deck> {
     @Override
     public boolean test(Deck deck) {
         return keywords.stream()
-                .anyMatch(keyword -> StringUtil.containsWordIgnoreCase(deck.getDeckName(), keyword));
+                .allMatch(keyword -> StringUtil.containsWordIgnoreCase(deck.getDeckName(), keyword));
     }
 
     @Override
