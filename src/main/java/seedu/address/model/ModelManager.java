@@ -223,12 +223,16 @@ public class ModelManager implements Model {
                 .orElse("No deck selected.");
     }
 
+    /**
+     * Returns the number of cards associated with a deck at the given index.
+     *
+     * @param deckIndex Index of the deck.
+     * @return The size of the deck.
+     */
     @Override
     public int getDeckSize(int deckIndex) {
         Deck deck = filteredDecks.get(deckIndex);
-        return new FilteredList<>(
-                masterDeck.getCardList(), new CardInDeckPredicate(deck)
-        ).size();
+        return masterDeck.getDeckSize(deck);
     }
 
     @Override

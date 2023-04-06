@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.card.Card;
+import seedu.address.model.card.CardInDeckPredicate;
 import seedu.address.model.card.UniqueCardList;
 import seedu.address.model.deck.Deck;
 import seedu.address.model.deck.UniqueDeckList;
@@ -37,14 +38,14 @@ public class MasterDeck implements ReadOnlyMasterDeck {
     public MasterDeck() {}
 
     /**
-     * Creates an Deck using the Cards in the {@code toBeCopied}
+     * Creates a Deck using the Cards in the {@code toBeCopied}
      */
     public MasterDeck(ReadOnlyMasterDeck toBeCopied) {
         this();
         resetData(toBeCopied);
     }
 
-    //// list overwrite operations
+    /* ================================= list overwrite operations ================================= */
 
     /**
      * Replaces the contents of the card list with {@code cards}.
@@ -68,7 +69,7 @@ public class MasterDeck implements ReadOnlyMasterDeck {
         setDecks(newData.getDeckList());
     }
 
-    //// card-level operations
+    /* ================================= Card-level operations ================================= */
 
     /**
      * Returns true if a card with the same identity as {@code card} exists in the master deck.
@@ -114,7 +115,7 @@ public class MasterDeck implements ReadOnlyMasterDeck {
         cards.remove(key);
     }
 
-    //// util methods
+    /* ================================= Deck-level operations ================================= */
 
     /**
      * For sample data (SampleDataUtil), Cards may be added without adding Decks,
@@ -141,8 +142,8 @@ public class MasterDeck implements ReadOnlyMasterDeck {
      * Adds a card to the masterDeck.
      * The card must not already exist in the masterDeck.
      */
-    public void addDeck(Deck d) {
-        decks.add(d);
+    public void addDeck(Deck deck) {
+        decks.add(deck);
     }
 
     /**
@@ -181,6 +182,17 @@ public class MasterDeck implements ReadOnlyMasterDeck {
         cardsToRemove.forEach(this::removeCard);
 
         decks.remove(key);
+    }
+
+    /**
+     * Returns the size of the given deck.
+     *
+     * @param deck Deck given.
+     * @return size of the deck.
+     */
+    public int getDeckSize(Deck deck) {
+        return cards.asUnmodifiableObservableList()
+                .filtered(new CardInDeckPredicate(deck)).size();
     }
 
     @Override

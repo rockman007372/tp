@@ -51,12 +51,18 @@ public class ReviewCommand extends Command {
         requireNonNull(model);
 
         List<Deck> deckList = model.getFilteredDeckList();
+
         boolean isIndexOutOfBound = deckIndex.getZeroBased() >= deckList.size();
         if (isIndexOutOfBound) {
             throw new CommandException(MESSAGE_INVALID_DECK_DISPLAYED_INDEX);
-        } else if (model.getDeckSize(deckIndex.getZeroBased()) == 0) {
+        }
+
+        boolean isDeckEmpty = model.getDeckSize(deckIndex.getZeroBased()) == 0;
+        if (isDeckEmpty) {
             throw new CommandException(MESSAGE_EMPTY_DECK);
-        } else if (model.getDeckSizeFilteredTag(deckIndex.getZeroBased(), difficulties) == 0) {
+        }
+
+        if (model.getDeckSizeFilteredTag(deckIndex.getZeroBased(), difficulties) == 0) {
             throw new CommandException(MESSAGE_NO_CARDS_WITH_TAG);
         }
 

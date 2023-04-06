@@ -75,7 +75,7 @@ public class UniqueCardList implements Iterable<Card> {
     public void remove(Card toRemove) {
         requireNonNull(toRemove);
         if (!internalList.remove(toRemove)) {
-            throw new CardNotFoundException(); // TODO change to CardNotFoundException
+            throw new CardNotFoundException();
         }
     }
 
