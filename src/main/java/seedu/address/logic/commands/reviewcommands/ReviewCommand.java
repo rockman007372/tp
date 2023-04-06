@@ -30,7 +30,7 @@ public class ReviewCommand extends Command {
             + "Example (to test MEDIUM and HARD cards in deck 1): " + COMMAND_WORD + " 1 -m -h\n"
             + "No other input is allowed between the flags.";
 
-    public static final String MESSAGE_SUCCESS = "Deck to be reviewed: %1$s\nReviewing cards of %2$s";
+    public static final String MESSAGE_SUCCESS = "Deck to be reviewed: %1$s\nReviewing %2$s cards";
     public static final String MESSAGE_EMPTY_DECK = "The deck you chose to review is empty";
     public static final String MESSAGE_NO_CARDS_WITH_TAG = "There are no cards "
             + "tagged with those difficulties in the deck";
@@ -57,8 +57,8 @@ public class ReviewCommand extends Command {
             throw new CommandException(MESSAGE_INVALID_DECK_DISPLAYED_INDEX);
         }
 
-        boolean isDeckEmpty = model.getDeckSize(deckIndex.getZeroBased()) == 0;
-        if (isDeckEmpty) {
+        boolean isEmptyDeck = model.getDeckSize(deckIndex.getZeroBased()) == 0;
+        if (isEmptyDeck) {
             throw new CommandException(MESSAGE_EMPTY_DECK);
         }
 
@@ -68,27 +68,28 @@ public class ReviewCommand extends Command {
 
         model.reviewDeck(deckIndex, difficulties);
 
-        String diffString = "";
-        if (difficulties.containsAll(Arrays.asList(TagName.EASY, TagName.MEDIUM, TagName.HARD))) {
-            diffString = "EASY/MEDIUM/HARD difficulties";
-        } else if (difficulties.containsAll(Arrays.asList(TagName.EASY, TagName.MEDIUM))) {
-            diffString = "EASY/MEDIUM difficulties";
-        } else if (difficulties.containsAll(Arrays.asList(TagName.EASY, TagName.HARD))) {
-            diffString = "EASY/HARD difficulties";
-        } else if (difficulties.containsAll(Arrays.asList(TagName.MEDIUM, TagName.HARD))) {
-            diffString = "MEDIUM/HARD difficulties";
-        } else if (difficulties.contains(TagName.EASY)) {
-            diffString = "EASY difficulty";
-        } else if (difficulties.contains(TagName.MEDIUM)) {
-            diffString = "MEDIUM difficulty";
-        } else if (difficulties.contains(TagName.HARD)) {
-            diffString = "HARD difficulty";
+        StringBuilder tagString = new StringBuilder();
+
+        if (difficulties.isEmpty()) {
+            tagString.append("all");
         } else {
-            diffString = "ALL difficulties";
+            if (difficulties.contains(TagName.EASY)) {
+                tagString.append("EASY/");
+            }
+
+            if (difficulties.contains(TagName.MEDIUM)) {
+                tagString.append("MEDIUM/");
+            }
+
+            if (difficulties.contains(TagName.HARD)) {
+                tagString.append("HARD/");
+            }
+
+            tagString.deleteCharAt(tagString.length() - 1);
         }
 
         return new CommandResult(
-                String.format(MESSAGE_SUCCESS, model.getReviewDeckName(), diffString),
+                String.format(MESSAGE_SUCCESS, model.getReviewDeckName(), tagString),
                 false, false, true, false, false, false, false, false, false, false
         );
     }
