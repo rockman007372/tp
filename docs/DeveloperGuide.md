@@ -236,7 +236,7 @@ The following sequence diagram shows how the addDeck operation works:
 Commands in the `MAIN_SELECTED_MODE` behave similarly as the example of `deleteCard` below:
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** 
-The primary distinction between the features found in MAIN_SELECTED_MODE and MAIN_UNSELECTED_MODE is that the former requires the selection of a deck.
+The primary distinction between the features found in `MAIN_SELECTED_MODE` and `MAIN_UNSELECTED_MODE` is that the former requires the selection of a deck.
 </div>
 
 #### deleteCard Feature
