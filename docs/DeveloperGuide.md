@@ -119,7 +119,7 @@ How the parsing works:
 
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/ModelClassDiagram.png" width="450" />
+<img src="images/ModelClassDiagram.png" width="600" />
 
 
 The `Model` component,
@@ -137,7 +137,7 @@ Each `Card` object,
 
 ##### Review 
 
-<img src="images/SimplifiedReviewClassDiagram.png" width="600" />
+<img src="images/SimplifiedReviewClassDiagram.png" width="318" />
 
 The `Review`
 * stores a `Deck` currently being reviewed.
@@ -209,9 +209,9 @@ Step 2. The user executes `addDeck Math` command to add a new deck. The `addDeck
 
 Step 3. A new deck is now added on the list and able to execute further functionalities.
 
-<div markdown="span" class="alert alert-info">:information_source: 
+<div markdown="span" class="alert alert-info">
 
-**Note:**   
+:information_source: **Note:**     
 
 - In case of a duplicate deck name, an exception will be thrown and the newly created deck will not be saved in the `MasterDeck`. 
 - However, note that deck names are case-sensitive. For example, user cannot create two "Math" decks, but are allowed to create a "Math" deck and a "math" deck. 
