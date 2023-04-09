@@ -89,8 +89,4 @@ public class TypicalCards {
                 INDEPENDENCE, EARTHQUAKE, FRACTION));
     }
 
-    public static List<Card> getTypicalCardInTheSameDeck() {
-        return new ArrayList<>(Arrays.asList(LOOP, VARIABLE, ARRAY));
-    }
-
 }
