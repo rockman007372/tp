@@ -6,6 +6,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -255,7 +256,7 @@ public class ModelManager implements Model {
                         new CardInDeckPredicate(deckToReview)
                                 .and(new CardHasTagPredicate(difficulties)));
 
-        currReview = new Review(deckToReview, cardsToReview, numCardsPerReview);
+        currReview = new Review(deckToReview, cardsToReview, numCardsPerReview, new Random());
     }
 
     /**

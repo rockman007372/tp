@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalCards.getTypicalCards;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,21 +25,27 @@ public class ReviewTest {
     private final Deck deck = new Deck("testDeck");
     private List<Card> cardsInDeck = new ArrayList<>();
     private final int userSetNum = -1;
+    private final int seed = 1;
 
     @BeforeEach
     public void setUp() {
         cardsInDeck = getTypicalCards();
-        review = new Review(deck, cardsInDeck, userSetNum);
+        review = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
     }
 
     @Test
     public void constructor_nullDeck_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Review(null, cardsInDeck, userSetNum));
+        assertThrows(NullPointerException.class, () -> new Review(null, cardsInDeck, userSetNum, new Random(seed)));
     }
 
     @Test
     public void constructor_nullCardsInDeck_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Review(deck, null, userSetNum));
+        assertThrows(NullPointerException.class, () -> new Review(deck, null, userSetNum, new Random(seed)));
+    }
+
+    @Test
+    public void constructor_nullRandom_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new Review(deck, cardsInDeck, userSetNum, null));
     }
 
     @Test
@@ -86,26 +93,24 @@ public class ReviewTest {
     @Test
     void goToNextCard_goToPrevCard_sameReviewState() {
         // Construct review with the same original state
-        Review testReview = new Review(deck, cardsInDeck, -1, true);
-        Review modelReview = new Review(deck, cardsInDeck, -1, true);
+        Review modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
 
         // Go forward, then backward
-        testReview.goToNextCard();
-        testReview.goToPrevCard();
-        assertEquals(modelReview, testReview);
+        review.goToNextCard();
+        review.goToPrevCard();
+        assertEquals(modelReview, review);
     }
 
     @Test
     void tagCurrentCardTest() {
         Tag easy = new Tag(EASY);
         Card currCard = review.getCurrCardFlipped();
-
         assertNotEquals(currCard.getTag(), easy); // ensures current card has a different tag
 
         review.tagCurrentCard(easy);
+
         Card expectedCard = currCard.buildCardWithtag(easy);
         Card testCard = review.getCurrCardFlipped();
-
         assertEquals(expectedCard, testCard);
     }
 
@@ -129,40 +134,39 @@ public class ReviewTest {
 
     @Test
     void testEquals() {
-        Review testReview = new Review(deck, cardsInDeck, -1, true);
-        Review modelReview = new Review(deck, cardsInDeck, -1, true);
+        Review modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
 
         // same object -> returns true
-        assertEquals(testReview, testReview);
+        assertEquals(review, review);
 
         // same values -> returns true
-        assertEquals(modelReview, testReview);
+        assertEquals(modelReview, review);
 
         // different types -> returns false
-        assertNotEquals(1, testReview);
+        assertNotEquals(1, review);
 
         // null -> returns false
-        assertNotEquals(null, testReview);
+        assertNotEquals(null, review);
 
         // different deck -> return false
-        modelReview = new Review(new Deck(""), cardsInDeck, -1, true);
-        assertNotEquals(modelReview, testReview);
+        modelReview = new Review(new Deck(""), cardsInDeck, userSetNum, new Random(seed));
+        assertNotEquals(modelReview, review);
 
         // different cards -> return false
-        modelReview = new Review(deck, List.of(LOOP), -1, true);
-        assertNotEquals(modelReview, testReview);
+        modelReview = new Review(deck, List.of(LOOP), userSetNum, new Random(seed));
+        assertNotEquals(modelReview, review);
 
         // different total number of cards -> return false
-        modelReview = new Review(deck, cardsInDeck, 1, true);
-        assertNotEquals(modelReview, testReview);
+        modelReview = new Review(deck, cardsInDeck, 1, new Random(seed));
+        assertNotEquals(modelReview, review);
 
-        // random card orders -> return false
-        modelReview = new Review(deck, cardsInDeck, -1);
-        assertNotEquals(modelReview, testReview);
+        // different card orders -> return false
+        modelReview = new Review(deck, cardsInDeck, userSetNum, new Random());
+        assertNotEquals(modelReview, review);
 
         // different current card -> return false
-        modelReview = new Review(deck, cardsInDeck, -1, true);
-        testReview.goToNextCard();
-        assertNotEquals(modelReview, testReview);
+        modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
+        review.goToNextCard();
+        assertNotEquals(modelReview, review);
     }
 }

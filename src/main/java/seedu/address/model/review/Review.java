@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,9 +40,10 @@ public class Review {
      * @param deck Deck to be reviewed
      * @param cardsInDeck Cards inside the deck to be reviewed
      * @param userSetNum The card limit in this review, set by users
+     * @param random The random instance used to generate random order of cards.
      */
-    public Review(Deck deck, List<Card> cardsInDeck, int userSetNum) {
-        requireAllNonNull(deck, cardsInDeck, userSetNum);
+    public Review(Deck deck, List<Card> cardsInDeck, int userSetNum, Random random) {
+        requireAllNonNull(deck, cardsInDeck, userSetNum, random);
 
         this.deck = deck;
         totalNumCards = userSetNum < 0
@@ -55,35 +55,8 @@ public class Review {
         filteredReviewCardList = new FilteredList<>(uniqueReviewCardList.asUnmodifiableObservableList());
 
         // Randomise order of cards based on the total number of cards allowed in review
-        orderOfCards = new Random().ints(0, cardsInDeck.size())
+        orderOfCards = random.ints(0, cardsInDeck.size())
                 .distinct().limit(totalNumCards).boxed().collect(Collectors.toList());
-
-        // initialise first card
-        currCard = uniqueReviewCardList.getCard(orderOfCards.get(currCardIndex));
-        filteredReviewCardList.setPredicate(new IsSameCardPredicate(currCard));
-
-        // initialize review stats
-        reviewStatsList = FXCollections.observableList(new ArrayList<>());
-        updateReviewStatsList();
-    }
-
-    /**
-     * Creates a review instance with fixed predetermined order of cards. Used for testing only.
-     */
-    protected Review(Deck deck, List<Card> cardsInDeck, int userSetNum, boolean isTestConstructor) {
-        requireAllNonNull(deck, cardsInDeck, userSetNum);
-
-        this.deck = deck;
-        totalNumCards = userSetNum < 0
-                ? cardsInDeck.size()
-                : Integer.min(userSetNum, cardsInDeck.size());
-
-        // Initialize the unique card list
-        initReviewCardList(cardsInDeck);
-        filteredReviewCardList = new FilteredList<>(uniqueReviewCardList.asUnmodifiableObservableList());
-
-        // Normal ordering
-        orderOfCards = IntStream.range(0, totalNumCards).boxed().collect(Collectors.toList());
 
         // initialise first card
         currCard = uniqueReviewCardList.getCard(orderOfCards.get(currCardIndex));
