@@ -16,6 +16,9 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import seedu.address.model.card.Card;
 import seedu.address.model.deck.Deck;
 import seedu.address.model.tag.Tag;
@@ -133,6 +136,38 @@ public class ReviewTest {
     }
 
     @Test
+    void getDeckNameTest() {
+        assertEquals(deck.getDeckName(), review.getDeckName());
+    }
+
+    @Test
+    void getDeckTest() {
+        assertEquals(deck, review.getDeck());
+    }
+
+    @Test
+    void getReviewStatsList() {
+        ObservableList<Pair<String, String>> modelStats = FXCollections.observableList(new ArrayList<>());
+
+        Pair<String, String> title = new Pair<>("Deck Name", deck.getDeckName());
+
+        Pair<String, String> cardsSeen = new Pair<>("Current Card Number:",
+                String.format("%d/%d", 1, cardsInDeck.size()));
+
+        int easyTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("easy")).count();
+        int mediumTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("medium")).count();
+        int hardTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("hard")).count();
+        Pair<String, String> tagCount = new Pair<>("Current Tags:",
+                String.format("%d Easy, %d Medium, %d Hard", easyTagCount, mediumTagCount, hardTagCount));
+
+        Pair<String, String> navGuide = new Pair<>("", "");
+
+        modelStats.addAll(title, cardsSeen, tagCount, navGuide);
+
+        assertEquals(modelStats, review.getReviewStatsList());
+    }
+
+    @Test
     void testEquals() {
         Review modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
 
@@ -164,7 +199,7 @@ public class ReviewTest {
         modelReview = new Review(deck, cardsInDeck, userSetNum, new Random());
         assertNotEquals(modelReview, review);
 
-        // different current card -> return false
+        // different current card, current index -> return false
         modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
         review.goToNextCard();
         assertNotEquals(modelReview, review);
