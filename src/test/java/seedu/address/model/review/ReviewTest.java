@@ -52,6 +52,11 @@ public class ReviewTest {
     }
 
     @Test
+    public void constructor_emptyCardList_throwsAssert() {
+        assertThrows(AssertionError.class, () -> new Review(deck, new ArrayList<>(), userSetNum, new Random(seed)));
+    }
+
+    @Test
     public void isCurrCardFlipped_flippedCard_returnsTrue() {
         review.flipCurrCard();
         assertTrue(review.isCurrCardFlipped());
@@ -204,4 +209,5 @@ public class ReviewTest {
         review.goToNextCard();
         assertNotEquals(modelReview, review);
     }
+
 }
