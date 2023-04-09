@@ -74,6 +74,7 @@ public class Review {
      */
     private void initReviewCardList(List<Card> cardList) {
         uniqueReviewCardList = new UniqueCardList();
+        assert cardList.size() > 0 : "Card list must have at least 1 card";
         for (Card c : cardList) {
             uniqueReviewCardList.add(c.buildUnflippedCard());
         }
@@ -259,9 +260,9 @@ public class Review {
         return deck.equals(otherReview.deck)
                 && uniqueReviewCardList.equals(otherReview.uniqueReviewCardList)
                 && filteredReviewCardList.equals(otherReview.filteredReviewCardList)
+                && orderOfCards.equals(otherReview.orderOfCards)
                 && totalNumCards == otherReview.totalNumCards
                 && currCard.equals(otherReview.currCard)
-                && orderOfCards.equals(otherReview.orderOfCards)
                 && currCardIndex == otherReview.currCardIndex
                 && reviewStatsList.equals(otherReview.reviewStatsList);
     }

@@ -196,10 +196,10 @@ public class ReviewTest {
         assertNotEquals(modelReview, review);
 
         // different card orders -> return false
-        modelReview = new Review(deck, cardsInDeck, userSetNum, new Random());
+        modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed + 1));
         assertNotEquals(modelReview, review);
 
-        // different current card, current index -> return false
+        // different current card, current card index, current stats -> return false
         modelReview = new Review(deck, cardsInDeck, userSetNum, new Random(seed));
         review.goToNextCard();
         assertNotEquals(modelReview, review);
