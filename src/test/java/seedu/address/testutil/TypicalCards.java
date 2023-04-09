@@ -26,6 +26,10 @@ public class TypicalCards {
     public static final Card VARIABLE = new CardBuilder().withQuestion("What is a variable")
             .withAnswer("A named memory location that stores a value")
             .withTag("Hard").withDeck("Programming Concepts").build();
+    public static final Card ARRAY = new CardBuilder().withQuestion("What is an array")
+            .withAnswer("A collection of data items of the same type that are stored together in "
+                    + "contiguous memory locations and accessed by a single name.")
+            .withTag("Hard").withDeck("Programming Concepts").build();
     public static final Card ATOM = new CardBuilder().withQuestion("What is the structure of an atom")
             .withAnswer("Atoms consist of a nucleus containing protons and neutrons"
                     + ", surrounded by electrons in shells or energy levels")
@@ -84,4 +88,9 @@ public class TypicalCards {
         return new ArrayList<>(Arrays.asList(LOOP, VARIABLE, ATOM, LIFE, PRESIDENT,
                 INDEPENDENCE, EARTHQUAKE, FRACTION));
     }
+
+    public static List<Card> getTypicalCardInTheSameDeck() {
+        return new ArrayList<>(Arrays.asList(LOOP, VARIABLE, ARRAY));
+    }
+
 }
