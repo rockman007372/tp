@@ -1,23 +1,15 @@
 package seedu.address.model.review;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import static seedu.address.model.tag.Tag.TagName.EASY;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalCards.ATOM;
-import static seedu.address.testutil.TypicalCards.LIFE;
-import static seedu.address.testutil.TypicalCards.LOOP;
-import static seedu.address.testutil.TypicalCards.PRESIDENT;
-import static seedu.address.testutil.TypicalCards.VARIABLE;
 import static seedu.address.testutil.TypicalCards.getTypicalCards;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +83,7 @@ public class ReviewTest {
     }
 
     @Test
-    void goToNextCard_goToPrevCard_SameReviewState() {
+    void goToNextCard_goToPrevCard_sameReviewState() {
         // Construct review with the same original state
         Review testReview = new Review(deck, cardsInDeck, -1, true);
         Review modelReview = new Review(deck, cardsInDeck, -1, true);
