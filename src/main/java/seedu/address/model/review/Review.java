@@ -26,17 +26,20 @@ public class Review {
     private final Deck deck;
 
     private UniqueCardList uniqueReviewCardList;
-    private final ObservableList<Card> unmodifiableReviewCardList;
     private final FilteredList<Card> filteredReviewCardList;
 
     private final int totalNumCards;
     private Card currCard;
     private final List<Integer> orderOfCards;
     private int currCardIndex = 0; // 0-Indexed
-    private ObservableList<Pair<String, String>> reviewStatsList;
+    private final ObservableList<Pair<String, String>> reviewStatsList;
 
     /**
-     * Every field must be present and not null.
+     * Constructs an instance of review.
+     *
+     * @param deck Deck to be reviewed
+     * @param cardsInDeck Cards inside the deck to be reviewed
+     * @param userSetNum The card limit in this review, set by users
      */
     public Review(Deck deck, List<Card> cardsInDeck, int userSetNum) {
         requireAllNonNull(deck, cardsInDeck, userSetNum);
@@ -48,15 +51,14 @@ public class Review {
 
         // Initialize the unique card list
         initReviewCardList(cardsInDeck);
-        this.unmodifiableReviewCardList = uniqueReviewCardList.asUnmodifiableObservableList();
-        filteredReviewCardList = new FilteredList<>(this.unmodifiableReviewCardList);
+        filteredReviewCardList = new FilteredList<>(uniqueReviewCardList.asUnmodifiableObservableList());
 
         // Randomise order of cards based on the total number of cards allowed in review
         orderOfCards = new Random().ints(0, cardsInDeck.size())
                 .distinct().limit(totalNumCards).boxed().collect(Collectors.toList());
 
         // initialise first card
-        currCard = this.unmodifiableReviewCardList.get(orderOfCards.get(currCardIndex));
+        currCard = uniqueReviewCardList.getCard(orderOfCards.get(currCardIndex));
         filteredReviewCardList.setPredicate(new IsSameCardPredicate(currCard));
 
         // initialize review stats
@@ -104,7 +106,7 @@ public class Review {
      */
     private void updateCurrCard() {
         int indexInReview = orderOfCards.get(currCardIndex);
-        currCard = this.unmodifiableReviewCardList.get(indexInReview);
+        currCard = uniqueReviewCardList.getCard(indexInReview);
     }
 
     /**
@@ -141,7 +143,7 @@ public class Review {
         unflipCard(currCard); // always unflip current card before moving to next
 
         currCardIndex++;
-        currCard = unmodifiableReviewCardList.get(orderOfCards.get(currCardIndex));
+        currCard = uniqueReviewCardList.getCard(orderOfCards.get(currCardIndex));
         filteredReviewCardList.setPredicate(new IsSameCardPredicate(currCard));
 
         updateReviewStatsList();
@@ -160,7 +162,7 @@ public class Review {
         unflipCard(currCard); // always unflip current card before moving to previous one
 
         currCardIndex--;
-        currCard = unmodifiableReviewCardList.get(orderOfCards.get(currCardIndex));
+        currCard = uniqueReviewCardList.getCard(orderOfCards.get(currCardIndex));
         filteredReviewCardList.setPredicate(new IsSameCardPredicate(currCard));
 
         updateReviewStatsList();
@@ -173,8 +175,19 @@ public class Review {
      *
      * @return the current card flipped.
      */
-    public Card getCurrCard() {
+    public Card getCurrCardFlipped() {
         return currCard.buildFlippedCard();
+    }
+
+    /**
+     * Returns the current card in the review.
+     * Card has the same flip state in the review.
+     * This method is used for test purposes only.
+     *
+     * @return the current card with the current flip state.
+     */
+    public Card getCurrCard() {
+        return currCard;
     }
 
     /**
@@ -194,25 +207,21 @@ public class Review {
 
     public int getNoOfEasyTags() {
         return (int) orderOfCards.stream()
-                .map(unmodifiableReviewCardList::get)
+                .map(uniqueReviewCardList::getCard)
                 .filter(card -> card.getTagName().equals("easy")).count();
 
     }
 
     public int getNoOfMediumTags() {
         return (int) orderOfCards.stream()
-                .map(unmodifiableReviewCardList::get)
+                .map(uniqueReviewCardList::getCard)
                 .filter(card -> card.getTagName().equals("medium")).count();
     }
 
     public int getNoOfHardTags() {
         return (int) orderOfCards.stream()
-                .map(unmodifiableReviewCardList::get)
+                .map(uniqueReviewCardList::getCard)
                 .filter(card -> card.getTagName().equals("hard")).count();
-    }
-
-    public int getNoOfUntagged() {
-        return (int) unmodifiableReviewCardList.stream().filter(card -> card.getTagName().equals("untagged")).count();
     }
 
     public ObservableList<Pair<String, String> > getReviewDeckNameList() {
@@ -234,4 +243,26 @@ public class Review {
         this.reviewStatsList.clear();
         this.reviewStatsList.addAll(title, cardsSeen, tagCount, navGuide); // warning being called here
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof Review)) {
+            return false; // also handles null
+        }
+
+        Review otherReview = (Review) other;
+        return deck.equals(otherReview.deck)
+                && uniqueReviewCardList.equals(otherReview.uniqueReviewCardList)
+                && filteredReviewCardList.equals(otherReview.filteredReviewCardList)
+                && totalNumCards == otherReview.totalNumCards
+                && currCard.equals(otherReview.currCard)
+                && orderOfCards.equals(otherReview.orderOfCards)
+                && currCardIndex == otherReview.currCardIndex
+                && reviewStatsList.equals(otherReview.reviewStatsList);
+    }
+
 }

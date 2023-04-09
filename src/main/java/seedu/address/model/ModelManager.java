@@ -319,7 +319,7 @@ public class ModelManager implements Model {
 
     @Override
     public void tagCurrentCardInReview(Tag tag) {
-        masterDeck.tagCard(currReview.getCurrCard(), tag); // modifies masterDeck
+        masterDeck.tagCard(currReview.getCurrCardFlipped(), tag); // modifies masterDeck
         currReview.tagCurrentCard(tag); // reflects in GUI
     }
 

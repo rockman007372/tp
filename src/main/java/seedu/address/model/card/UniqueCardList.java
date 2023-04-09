@@ -134,4 +134,16 @@ public class UniqueCardList implements Iterable<Card> {
         }
         return true;
     }
+
+    /**
+     * Returns the card at the given index.
+     * Card is guaranteed to be immutable, hence there will be no changes to the internal list even if
+     * the card is exposed externally.
+     *
+     * @param index index of the card (0-based)
+     * @return card at given index.
+     */
+    public Card getCard(int index) {
+        return internalList.get(index);
+    }
 }
