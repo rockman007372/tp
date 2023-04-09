@@ -22,7 +22,7 @@ public class ReviewTest {
     private Review review;
     private final Deck deck = new Deck("testDeck");
     private List<Card> cardsInDeck = new ArrayList<>();
-    private final int userSetNum = 5;
+    private final int userSetNum = -1;
 
     @BeforeEach
     public void setUp() {
@@ -71,7 +71,7 @@ public class ReviewTest {
 
     @Test
     public void goToNextCard_lastCard_returnsFalse() {
-        for (int i = 0; i < userSetNum - 1; i++) {
+        for (int i = 0; i < cardsInDeck.size() - 1; i++) {
             assertTrue(review.goToNextCard());
         }
         assertFalse(review.goToNextCard());
@@ -116,13 +116,13 @@ public class ReviewTest {
 
     @Test
     void getNoOfMediumTagsTest() {
-        int easyTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("medium")).count();
-        assertEquals(review.getNoOfMediumTags(), easyTagCount);
+        int mediumTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("medium")).count();
+        assertEquals(review.getNoOfMediumTags(), mediumTagCount);
     }
 
     @Test
     void getNoOfHardTagsTest() {
-        int easyTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("hard")).count();
-        assertEquals(review.getNoOfHardTags(), easyTagCount);
+        int hardTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("hard")).count();
+        assertEquals(review.getNoOfHardTags(), hardTagCount);
     }
 }
