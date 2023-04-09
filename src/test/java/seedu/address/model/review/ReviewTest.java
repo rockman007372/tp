@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.tag.Tag.TagName.EASY;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalCards.LOOP;
 import static seedu.address.testutil.TypicalCards.getTypicalCards;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.commands.cardcommands.AddCardCommand;
 import seedu.address.model.card.Card;
 import seedu.address.model.deck.Deck;
 import seedu.address.model.tag.Tag;
@@ -124,5 +126,44 @@ public class ReviewTest {
     void getNoOfHardTagsTest() {
         int hardTagCount = (int) cardsInDeck.stream().filter(card -> card.getTagName().equals("hard")).count();
         assertEquals(review.getNoOfHardTags(), hardTagCount);
+    }
+
+    @Test
+    void testEquals() {
+        Review testReview = new Review(deck, cardsInDeck, -1, true);
+        Review modelReview = new Review(deck, cardsInDeck, -1, true);
+
+        // same object -> returns true
+        assertEquals(testReview, testReview);
+
+        // same values -> returns true
+        assertEquals(modelReview, testReview);
+
+        // different types -> returns false
+        assertNotEquals(1, testReview);
+
+        // null -> returns false
+        assertNotEquals(null, testReview);
+
+        // different deck -> return false
+        modelReview = new Review(new Deck(""), cardsInDeck, -1, true);
+        assertNotEquals(modelReview, testReview);
+
+        // different cards -> return false
+        modelReview = new Review(deck, List.of(LOOP), -1, true);
+        assertNotEquals(modelReview, testReview);
+
+        // different total number of cards -> return false
+        modelReview = new Review(deck, cardsInDeck, 1, true);
+        assertNotEquals(modelReview, testReview);
+
+        // random card orders -> return false
+        modelReview = new Review(deck, cardsInDeck, -1);
+        assertNotEquals(modelReview, testReview);
+
+        // different current card -> return false
+        modelReview = new Review(deck, cardsInDeck, -1, true);
+        testReview.goToNextCard();
+        assertNotEquals(modelReview, testReview);
     }
 }
